@@ -70,11 +70,26 @@ John has been smacked with a fish.
 
 ## So how does it work?
 
-A Bales app is basically a collection of classes: one class representing the application itself (`SimpleApp::Application` in the above example) and one or more classes representing the application's commands (`SimpleApp::Command` and its children in the above example).
+* Come up with a name for your app, like `MyApp`
+* Create an `Application` class under that namespace which inherits from `Bales::Application`
+* Create a `Command` class under that namespace which inherits from `Bales::Command`
+* Give that `Command` an `action`, which will be what your application does by default if no valid subcommands are passed to it
+* (Optional) Create one or more classes under the `MyApp::Command` namespace, inheriting from some subclass of `Bales::Command` (including the base command you defined previously), if you want some git-style or rails-style subcommands.
+
+Basically, a Bales app is just a bunch of classes with some fairy dust that turns them into runnable commands.  Bales will check the namespace that your subclass of `Bales::Application` lives in for a `Command` namespace, then search there for available commands.
 
 The application has (or *will* have, more precisely; I don't have a whole lot for you on this front just yet) a few available DSL-ish functions for you to play with.
 
 * `version`: sets your app's version number.  If you use semantic versioning, you can query this with the `major_version`, `minor_version`, and `patch_level` class methods.
+
+Meanwhile, commands *also* have some DSL-ish functions to play around with.
+
+* `option`: defines a command-line option, like `--verbose` or `-f` or something.  It takes the name of the option (which becomes a key in your command's options hash) and some named parameters:
+  * `:type`: a valid Ruby class, like `String`.  For a boolean, you should provide either `TrueClass` or `FalseClass`, which - when set - will set the option in question to `true` or `false` (respectively).
+  * `:short_form`: a short flag, like `'-v'`.  You must specify this if you want a short flag.
+  * `:long_form`: a long flag, like `'--verbose'`.  This will be created from the option's name if you don't override it here.
+  * `:description`: a quick description of the option, like `"Whether or not to be verbose"`.
+* `action`: defines what the command should do when it's called.  This is provided in the form of a block.  Said block should accept two arguments (an array of arguments and a hash of options), though you don't *have* to name them with pipes and stuff if you know that your command won't take any arguments or options.
 
 ## What kind of a silly names is "Bales", anyway?
 

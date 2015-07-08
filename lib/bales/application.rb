@@ -2,26 +2,16 @@ require 'bales/command'
 
 ##
 # Base class for Bales apps.  Your command-line program should create a
-# subclass of this, then call said subclass' #parse_and_run instance
+# subclass of this, then call said subclass' +#parse_and_run+ instance
 # method, like so:
 #
-# ```ruby
-# class MyApp::Application < Bales::Application
-#   # insert customizations here
-# end
+#   class MyApp::Application < Bales::Application
+#     # insert customizations here
+#   end
 #
-# MyApp::Application.parse_and_run
-# ```
+#   MyApp::Application.parse_and_run
 module Bales
   class Application
-    def self.default_command
-      @default_command ||= Bales::Command::Help
-      @default_command
-    end
-    def self.default_command=(command)
-      @default_command = command
-    end
-
     ##
     # Set or retrieve the application's version number.  Defaults to "0.0.0".
     def self.version(v="0.0.0")
@@ -51,7 +41,7 @@ module Bales
 
     ##
     # Runs the specified command (should be a valid class; preferably, should
-    # be a subclass of Bales::Command).  Takes a list of positional args
+    # be a subclass of +Bales::Command+).  Takes a list of positional args
     # followed by named options.
     def self.run(command, *args, **opts)
       command.run *args, **opts
@@ -77,26 +67,6 @@ module Bales
     end
 
     private
-
-    # def self.parse_command_name(argv)
-    #   command_name_parts = [*constant_to_args(base_name), "command"]
-    #   puts command_name_parts
-    #   argv.each do |arg|
-    #     break if arg.match(/^-/)
-    #     begin
-    #       test = args_to_constant [*command_name_parts, arg]
-    #     rescue NameError
-    #       break
-    #     end
-    #     if eval("defined? #{test}") == "constant"
-    #       command_name_parts.push argv.shift
-    #     else
-    #       break
-    #     end
-    #   end
-    #   command = args_to_constant [*command_name_parts]
-    #   return command, argv
-    # end
 
     def self.parse_command_name(argv)
       command_name_parts = [*constant_to_args(base_name), "command"]
