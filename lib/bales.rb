@@ -12,7 +12,6 @@ require 'bales/command'
 # we, as a Ruby programming community, can get a headstart on a command-line
 # app framework *before* the Puma-Unicorn Wars ravage the Earth.
 module Bales
-  VERSION="0.0.0"
 end
 
 # Helper stuff; please ignore
