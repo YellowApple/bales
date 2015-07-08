@@ -135,8 +135,13 @@ module Bales
     def self.args_to_constant(argv)
       result = argv.dup
       result.map! do |arg|
-        arg.capitalize
-        arg.gsub('-','_').split('_').map { |e| e.capitalize}.join
+        arg
+          .capitalize
+          .gsub('-','_')
+          .gsub(/\W/,'')
+          .split('_')
+          .map { |e| e.capitalize}
+          .join
       end
       eval result.join('::')
     end
