@@ -200,11 +200,3 @@ module Bales
     end
   end
 end
-
-##
-# Default help command.  You'll probably use your own...
-class Bales::Command::Help < Bales::Command
-  action do |args, opts|
-    puts "This will someday output some help text"
-  end
-end
