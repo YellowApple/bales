@@ -57,7 +57,7 @@ $ simple-app smack
 You have been smacked.
 $ simple-app smack foo
 foo has been smacked.
-$ simple-app Fred Wilma
+$ simple-app smack Fred Wilma
 Fred has been smacked.
 Wilma has been smacked.
 $ simple-app smack John -w fish
