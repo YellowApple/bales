@@ -21,8 +21,8 @@ module SimpleApp
   end
 
   class Command < Bales::Command
-    action do
-      Bales::Command::Help.run
+    action do |args, opts|
+      Bales::Command::Help.run |args, opts|
     end
 
     class Smack < Command
@@ -90,6 +90,20 @@ Meanwhile, commands *also* have some DSL-ish functions to play around with.
   * `:long_form`: a long flag, like `'--verbose'`.  This will be created from the option's name if you don't override it here.
   * `:description`: a quick description of the option, like `"Whether or not to be verbose"`.
 * `action`: defines what the command should do when it's called.  This is provided in the form of a block.  Said block should accept two arguments (an array of arguments and a hash of options), though you don't *have* to name them with pipes and stuff if you know that your command won't take any arguments or options.
+* `description`: sets a long description of what your command does.  Should be a string.
+* `summary`: sets a short description of what your command does.  Should be a string.  Should also be shorter than `:description`, though this isn't strictly necessary.
+
+## What can this thing already do?
+
+* Create a working command-line app
+* Automatically produce subcommands (recursively, in fact) based on the namespaces of the corresponding `Bales::Command` subclasses
+* Provide a DSL for defining command option flags (instead of the traditional answer of trying to figure out OptionParser)
+
+## What might this thing someday do in the future?
+
+* Provide a DSL for creating the application and commands instead of defining classes directly
+* Provide some helpers to wrap things like HighLine, curses, etc.
+* Provide some additional flexibility in how options are specified without requiring users to completely reimplement a command's option parsing functions
 
 ## What kind of a silly names is "Bales", anyway?
 
