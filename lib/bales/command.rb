@@ -85,11 +85,9 @@ module Bales
     #     end
     #   end
     def self.action(&code)
-      @action = code
-    end
-
-    def self.run(*args, **opts)
-      @action.call(args, opts) unless @action.nil?
+      singleton_class.instance_eval do
+        define_method :run, &code
+      end
     end
 
     ##
