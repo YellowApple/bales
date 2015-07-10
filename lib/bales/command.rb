@@ -50,6 +50,31 @@ module Bales
     end
 
     ##
+    # Get the command's description, or set it if a string is passed to it.
+    def self.description(value=nil)
+      @description = value unless value.nil?
+      @description
+    end
+
+    ##
+    # Get the command's summary, or set it if a string is passed to it.
+    def self.summary(value=nil)
+      @summary = value unless value.nil?
+      @description
+    end
+
+    ##
+    # Translates the command's class name to the corresponding name passed on
+    # the command line.
+    def self.command_name
+      self
+        .name
+        .split('::')
+        .map { |e| e.gsub(/(.)([A-Z])/, '\1-\2').downcase }
+        .join(' ')
+    end
+
+    ##
     # Assigns an action to this command.  Said action is represented as a
     # block, which should accept an array of arguments and a hash of options.
     # For example:
