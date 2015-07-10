@@ -2,6 +2,7 @@
 
 require 'bales/application'
 require 'bales/command'
+require 'bales/command/help'
 
 ##
 # Ruby on Bales (or just "Bales" for short) is to command-line apps what
