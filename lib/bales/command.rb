@@ -137,12 +137,12 @@ module Bales
         raise ArgumentError, ":type option should be a valid class"
       end
 
-      if (opts[:type].ancestors & [TrueClass, FalseClass]).empty?
+      unless opts[:type] <= TrueClass or opts[:type] <= FalseClass
         opts[:arg] ||= name
       end
 
-      opts[:default] = false if opts[:type].ancestors.include? TrueClass
-      opts[:default] = true if opts[:type].ancestors.include? FalseClass
+      opts[:default] = false if opts[:type] <= TrueClass
+      opts[:default] = true if opts[:type] <= FalseClass
 
       result = options
       result[name] = opts
@@ -167,7 +167,9 @@ module Bales
         result[name] = opts[:default]
         parser_args = []
         parser_args.push opts[:short_form] if opts[:short_form]
-        if (opts[:type].ancestors & [TrueClass,FalseClass]).empty?
+        if opts[:type] <= TrueClass or opts[:type] <= FalseClass
+          parser_args.push opts[:long_form]
+        else
           argstring = opts[:arg].to_s.upcase
           if opts[:required]
             parser_args.push "#{opts[:long_form]} #{argstring}"
@@ -175,16 +177,14 @@ module Bales
             parser_args.push "#{opts[:long_form]} [#{argstring}]"
           end
           parser_args.push opts[:type]
-        else
-          parser_args.push opts[:long_form]
         end
         parser_args.push opts[:description]
 
-        if opts[:type].ancestors.include? FalseClass
+        if opts[:type] <= FalseClass
           optparser.on(*parser_args) do
             result[name] = false
           end
-        elsif opts[:type].ancestors.include? TrueClass
+        elsif opts[:type] <= TrueClass
           optparser.on(*parser_args) do
             result[name] = true
           end
