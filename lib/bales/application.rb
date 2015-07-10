@@ -44,7 +44,7 @@ module Bales
     # be a subclass of +Bales::Command+).  Takes a list of positional args
     # followed by named options.
     def self.run(command, *args, **opts)
-      command.run *args, **opts
+      command.run args, opts
     end
 
     ##
