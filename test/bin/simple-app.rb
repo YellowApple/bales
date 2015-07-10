@@ -12,8 +12,16 @@ module SimpleApp
   end
 
   class Command < Bales::Command
-    action do
-      Bales::Command::Help.run
+    action do |args, opts|
+      # Bales::Command::Help.run(args, opts)
+      Help.run(args, opts)
+    end
+
+    class Help < Bales::Command::Help
+      action do |args, opts|
+        puts "Custom help command"
+        super(args, opts)
+      end
     end
 
     class Smack < Command

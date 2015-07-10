@@ -13,8 +13,8 @@ module ComplexApp
   end
 
   class Command < Bales::Command
-    action do
-      Bales::Command::Help.run
+    action do |args, opts|
+      Bales::Command::Help.run(args, opts)
     end
 
     class Say < Command
@@ -31,7 +31,7 @@ module ComplexApp
       end
 
       class To < Command
-        action do |args|
+        action do |args, opts|
           recipient = args.shift
           message = args.shift
           raise ArgumentError, "too many arguments" unless args.none?
