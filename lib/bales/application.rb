@@ -21,6 +21,27 @@ module Bales
     end
 
     ##
+    # Set or retrieve the application's banner.
+    def self.banner(text=nil)
+      @banner = text unless text.nil?
+      @banner
+    end
+
+    ##
+    # Set or retrieve the application's description
+    def self.description(text=nil)
+      @description = text unless text.nil?
+      @description
+    end
+
+    ##
+    # Set or retrieve the application's summary
+    def self.summary(text=nil)
+      @summary = text unless text.nil?
+      @summary
+    end
+
+    ##
     # Major version number.  Assumes semantic versioning, but will work with
     # any versioning scheme with at least major and minor version numbers.
     def self.major_version
