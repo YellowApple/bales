@@ -6,13 +6,10 @@ class Bales::Command::Help < Bales::Command
     if args.empty?
       target = basename
     elsif command?(args[0])
-      target = basename(
-        eval(args[0].gsub('_','-').split('-').map { |p| p.capitalize }.join)
-      )
-      puts target
+      target = args[0].gsub('_','-').split('-').map { |p| p.capitalize }.join
+      target = eval "#{rootname}::Command::#{target}"
     else
-      puts "Couldn't find helptext for '#{args[0]}'"
-      exit
+      target = basename
     end
 
     puts "(insert helptext for '#{target.command_name}' here)"
