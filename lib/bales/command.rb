@@ -69,11 +69,6 @@ module Bales
     # Translates the command's class name to the corresponding name passed on
     # the command line.
     def self.command_name
-      # self
-      #   .name
-      #   .split('::')
-      #   .map { |e| e.gsub(/(.)([A-Z])/, '\1-\2').downcase }
-      #   .join(' ')
       name = self
              .name
              .split('::')
