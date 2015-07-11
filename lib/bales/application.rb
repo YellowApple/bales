@@ -13,9 +13,10 @@ require 'bales/command'
 module Bales
   class Application
     ##
-    # Set or retrieve the application's version number.  Defaults to "0.0.0".
-    def self.version(v="0.0.0")
-      @version ||= v
+    # Set or retrieve the application's version number.
+    def self.version(v=nil)
+      @version = v unless v.nil?
+      @version = "0.0.0" if @version.nil?
       @version
     end
 

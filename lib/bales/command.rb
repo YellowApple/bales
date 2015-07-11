@@ -53,6 +53,7 @@ module Bales
     # Get the command's description, or set it if a string is passed to it.
     def self.description(value=nil)
       @description = value unless value.nil?
+      @description = "(no description)" if @description.nil?
       @description
     end
 
@@ -60,18 +61,30 @@ module Bales
     # Get the command's summary, or set it if a string is passed to it.
     def self.summary(value=nil)
       @summary = value unless value.nil?
-      @description
+      @summary = "(no summary)" if @summary.nil?
+      @summary
     end
 
     ##
     # Translates the command's class name to the corresponding name passed on
     # the command line.
     def self.command_name
-      self
-        .name
-        .split('::')
-        .map { |e| e.gsub(/(.)([A-Z])/, '\1-\2').downcase }
-        .join(' ')
+      # self
+      #   .name
+      #   .split('::')
+      #   .map { |e| e.gsub(/(.)([A-Z])/, '\1-\2').downcase }
+      #   .join(' ')
+      name = self
+             .name
+             .split('::')
+             .last
+             .gsub(/(.)([A-Z])/, '\1-\2')
+             .downcase
+      if name == "command"
+        $0
+      else
+        name
+      end
     end
 
     ##
