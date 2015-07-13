@@ -1,9 +1,9 @@
 require 'bales/command'
 
 ##
-# Base class for Bales apps.  Your command-line program should create a
-# subclass of this, then call said subclass' +#parse_and_run+ instance
-# method, like so:
+# Base class for Bales apps.  Your command-line program should create
+# a subclass of this, then call said subclass' +#parse_and_run+
+# instance method, like so:
 #
 #   class MyApp::Application < Bales::Application
 #     # insert customizations here
@@ -42,15 +42,17 @@ module Bales
     end
 
     ##
-    # Major version number.  Assumes semantic versioning, but will work with
-    # any versioning scheme with at least major and minor version numbers.
+    # Major version number.  Assumes semantic versioning, but will
+    # work with any versioning scheme with at least major and minor
+    # version numbers.
     def self.major_version
       version.split('.')[0]
     end
 
     ##
-    # Minor version number.  Assumes semantic versioning, but will work with
-    # any versioning scheme with at least major and minor version numbers.
+    # Minor version number.  Assumes semantic versioning, but will
+    # work with any versioning scheme with at least major and minor
+    # version numbers.
     def self.minor_version
       version.split('.')[1]
     end
@@ -62,17 +64,19 @@ module Bales
     end
 
     ##
-    # Runs the specified command (should be a valid class; preferably, should
-    # be a subclass of +Bales::Command+).  Takes a list of positional args
-    # followed by named options.
+    # Runs the specified command (should be a valid class; preferably,
+    # should be a subclass of +Bales::Command+, or should otherwise
+    # have a +.run+ class method that accepts a list of args and a
+    # hash of opts).  Takes a list of positional args followed by
+    # named options.
     def self.run(command, *args, **opts)
       command.run args, opts
     end
 
     ##
-    # Parses ARGV (or some other array if you specify one), returning the
-    # class of the identified command, a hash containing the passed-in
-    # options, and a list of any remaining arguments
+    # Parses ARGV (or some other array if you specify one), returning
+    # the class of the identified command, a hash containing the
+    # passed-in options, and a list of any remaining arguments
     def self.parse(argv=ARGV)
       command, result = parse_command_name argv.dup
       command ||= default_command
@@ -81,8 +85,8 @@ module Bales
     end
 
     ##
-    # Parses ARGV (or some other array if you specify one) for a command to
-    # run and its arguments/options, then runs the command.
+    # Parses ARGV (or some other array if you specify one) for a
+    # command to run and its arguments/options, then runs the command.
     def self.parse_and_run(argv=ARGV)
       command, args, opts = parse argv
       run command, *args, **opts
