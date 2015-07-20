@@ -21,24 +21,62 @@ module Bales
     end
 
     ##
+    # Define a command (specifically, a subclass of +Bales::Command+).
+    # Command should be a string corresponding to how the command will
+    # be invoked on the command-line; thus, a command with the class
+    # name +FooBar::Baz+ should be passed as "foo-bar baz".
+    def self.command(name=nil, **opts, &code)
+      const_name = "#{base_name.name}::Command"
+      opts[:parent] ||= Bales::Command
+
+      if eval("defined? #{const_name}") == "constant"
+        const = eval(const_name)
+      else
+        const = base_name.const_set('Command', Class.new(opts[:parent]))
+      end
+
+      unless name.nil?
+        name
+          .to_s
+          .split(' ')
+          .map { |p| p
+                 .downcase
+                 .gsub('_','-')
+                 .split('-')
+                 .map { |pp| pp.capitalize }
+                 .join }
+          .each do |part|
+          name = "#{const.name}::#{part}"
+          if const.const_defined? name
+            const = eval(name)
+          else
+            const = const.const_set(part, Class.new(opts[:parent]))
+          end
+        end
+      end
+
+      const.instance_eval(&code) if block_given?
+    end
+
+    ##
     # Set or retrieve the application's banner.
     def self.banner(text=nil)
-      @banner = text unless text.nil?
-      @banner
+      root_command.banner(text) unless text.nil?
+      root_command.banner
     end
 
     ##
     # Set or retrieve the application's description
     def self.description(text=nil)
-      @description = text unless text.nil?
-      @description
+      root_command.description(text) unless text.nil?
+      root_command.description
     end
 
     ##
     # Set or retrieve the application's summary
     def self.summary(text=nil)
-      @summary = text unless text.nil?
-      @summary
+      root_command.summary(text) unless text.nil?
+      root_command.summary
     end
 
     ##
@@ -61,6 +99,20 @@ module Bales
     # Patch level.  Assumes semantic versioning.
     def self.patch_level
       version.split('.')[2]
+    end
+
+    ##
+    # Set an application-level option.  See +Bales::Command+'s
+    # +option+ method for more details.
+    def self.option(name, **opts)
+      root_command.option(name, **opts)
+    end
+
+    ##
+    # Set an application-level action.  See +Bales::Command+'s
+    # +action+ method for more details.
+    def self.action(&code)
+      root_command.action(&code)
     end
 
     ##
@@ -122,6 +174,13 @@ module Bales
     def self.base_name
       result = self.name.split('::') - ["Application"]
       eval result.join('::')
+    end
+
+    def self.root_command
+      unless eval("defined? #{base_name}::Command") == "constant"
+        base_name.const_set "Command", Class.new(Bales::Command)
+      end
+      eval "#{base_name}::Command"
     end
 
     def self.constant_to_args(constant)
