@@ -202,7 +202,7 @@ module Bales
           end
           parser_args.push opts[:type]
         end
-        parser_args.push opts[:description]
+        parser_args.push opts[:description] if opts[:description]
 
         if opts[:type] <= FalseClass
           optparser.on(*parser_args) do
