@@ -190,16 +190,15 @@ module Bales
       options.each do |name, opts|
         result[name] = opts[:default]
         parser_args = []
-        parser_args.push opts[:short_form] if opts[:short_form]
         if opts[:type] <= TrueClass or opts[:type] <= FalseClass
+          parser_args.push opts[:short_form] if opts[:short_form]
           parser_args.push opts[:long_form]
         else
           argstring = opts[:arg].to_s.upcase
-          if opts[:required]
-            parser_args.push "#{opts[:long_form]} #{argstring}"
-          else
-            parser_args.push "#{opts[:long_form]} [#{argstring}]"
+          if opts[:short_form]
+            parser_args.push "#{opts[:short_form]} #{argstring}"
           end
+          parser_args.push "#{opts[:long_form]} #{argstring}"
           parser_args.push opts[:type]
         end
         parser_args.push opts[:description] if opts[:description]
