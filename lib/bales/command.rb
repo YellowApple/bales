@@ -50,7 +50,8 @@ module Bales
     end
 
     ##
-    # Get the command's description, or set it if a string is passed to it.
+    # Get the command's description, or set it if a string is passed
+    # to it.
     def self.description(value=nil)
       @description = value unless value.nil?
       @description = "(no description)" if @description.nil?
@@ -58,7 +59,8 @@ module Bales
     end
 
     ##
-    # Get the command's summary, or set it if a string is passed to it.
+    # Get the command's summary, or set it if a string is passed to
+    # it.
     def self.summary(value=nil)
       @summary = value unless value.nil?
       @summary = "(no summary)" if @summary.nil?
@@ -66,8 +68,8 @@ module Bales
     end
 
     ##
-    # Translates the command's class name to the corresponding name passed on
-    # the command line.
+    # Translates the command's class name to the corresponding name
+    # passed on the command line.
     def self.command_name
       name = self
              .name
@@ -83,9 +85,9 @@ module Bales
     end
 
     ##
-    # Assigns an action to this command.  Said action is represented as a
-    # block, which should accept an array of arguments and a hash of options.
-    # For example:
+    # Assigns an action to this command.  Said action is represented
+    # as a block, which should accept an array of arguments and a hash
+    # of options.  For example:
     #
     #   class MyApp::Hello < Bales::Command
     #     action do |args, opts|
@@ -99,11 +101,10 @@ module Bales
     end
 
     ##
-    # Primary entry point for a +Bales::Command+.  Generally a good idea to
-    # set this with +.action+, but it's possible to override this manually
-    # should you choose to do so.
+    # Primary entry point for a +Bales::Command+.  Generally a good
+    # idea to set this with +.action+, but it's possible to override
+    # this manually should you choose to do so.
     def self.run(args, opts)
-      # Bales::Command::Help.run args, opts
       my_help_class_name = "#{self.name}::Help"
       root_help_class_name = "#{self.to_s.split('::').first}::Command::Help"
       if eval("defined? #{my_help_class_name}")
@@ -115,42 +116,42 @@ module Bales
     end
 
     ##
-    # Defines a named option that the command will accept, along with some
-    # named arguments:
+    # Defines a named option that the command will accept, along with
+    # some named arguments:
     #
-    # [+:short_form+ (optional)] A shorthand flag to use for the option
-    #                            (like +-v+).  This should be a string, like
-    #                            +"-v"+.
+    # [+:short_form+ (optional)]
     #
-    # [+:long_form+ (optional)]  A longhand flag to use for the option (like
-    #                            +--verbose+).  This is derived from the name
-    #                            of the option if not specified.  This should
-    #                            be a string, like +"--verbose"+
+    #     A shorthand flag to use for the option (like +-v+).  This
+    #     should be a string, like +"-v"+.
     #
-    # [+:type+ (optional)]       The type that this option represents.
-    #                            Defaults to +TrueClass+.  Should be a valid
-    #                            class name, like +String+ or +Integer+
+    # [+:long_form+ (optional)]
     #
-    #                            A special note on boolean options: if you
-    #                            want your boolean to default to `true`, set
-    #                            +:type+ to +TrueClass+.  Likewise, if you
-    #                            want it to default to +false+, set +:type+
-    #                            to +FalseClass+.
+    #     A longhand flag to use for the option (like +--verbose+).
+    #     This is derived from the name of the option if not
+    #     specified.  This should be a string, like +"--verbose"+
     #
-    # [+:arg+ (optional)]        The name of the argument this option
-    #                            accepts.  This should be a symbol (like
-    #                            :level) or +false+ (if the option is a
-    #                            boolean flag).  Defaults to the name of the
-    #                            option or (if the option's +:type+ is
-    #                            +TrueClass+ or +FalseClass+) +false+.
+    # [+:type+ (optional)]
     #
-    # [+:required+ (optional)]   Whether or not the option is required.  This
-    #                            should be a boolean (+true+ or +false+).
-    #                            Default is `false`.
+    #     The type that this option represents.  Defaults to
+    #     +TrueClass+.  Should be a valid class name, like +String+ or
+    #     +Integer+
     #
-    # Aside from the hash of option-options, +option+ takes a single +name+
-    # argument, which should be a symbol representing the name of the option
-    # to be set, like +:verbose+.
+    #     A special note on boolean options: if you want your boolean
+    #     to default to `true`, set +:type+ to +TrueClass+.  Likewise,
+    #     if you want it to default to +false+, set +:type+ to
+    #     +FalseClass+.
+    #
+    # [+:arg+ (optional)]
+    #
+    #     The name of the argument this option accepts.  This should
+    #     be a symbol (like :level) or +false+ (if the option is a
+    #     boolean flag).  Defaults to the name of the option or (if
+    #     the option's +:type+ is +TrueClass+ or +FalseClass+)
+    #     +false+.
+    #
+    # Aside from the hash of option-options, +option+ takes a single
+    # +name+ argument, which should be a symbol representing the name
+    # of the option to be set, like +:verbose+.
     def self.option(name, **opts)
       name = name.to_sym
       opts[:long_form] ||= "--#{name.to_s}".gsub("_","-")
@@ -174,16 +175,17 @@ module Bales
     end
 
     ##
-    # Takes an ARGV-like array and returns a hash of options and what's left
-    # of the original array.  This is rarely needed for normal use, but is
-    # an integral part of how a +Bales::Application+ parses the ARGV it
-    # receives.
+    # Takes an ARGV-like array and returns a hash of options and
+    # what's left of the original array.  This is rarely needed for
+    # normal use, but is an integral part of how a
+    # +Bales::Application+ parses the ARGV it receives.
     #
-    # Normally, this should be perfectly fine to leave alone, but if you
-    # prefer to define your own parsing method (e.g. if you want to specify
-    # an alternative format for command-line options, or you are otherwise
-    # dissatisfied with the default approach of wrapping OptionParser), this
-    # is the method you'd want to override.
+    # Normally, this should be perfectly fine to leave alone, but if
+    # you prefer to define your own parsing method (e.g. if you want
+    # to specify an alternative format for command-line options, or
+    # you are otherwise dissatisfied with the default approach of
+    # wrapping OptionParser), this is the method you'd want to
+    # override.
     def self.parse_opts(argv)
       optparser = OptionParser.new
       result = {}
