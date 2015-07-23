@@ -146,6 +146,22 @@ module Bales
     def self.parse_and_run(argv=ARGV)
       command, args, opts = parse argv
       run command, *args, **opts
+    rescue OptionParser::MissingArgument
+      flag = $!.message.gsub("missing argument: ", '')
+      puts "#{$0}: error: option needs an argument (#{flag})"
+      exit!
+    rescue OptionParser::InvalidOption
+      flag = $!.message.gsub("invalid option: ", '')
+      puts "#{$0}: error: unknown option (#{flag})"
+      exit!
+    rescue ArgumentError
+      received, expected = $!
+                             .message
+                             .gsub("wrong number of arguments (", '')
+                             .gsub(")", '')
+                             .split(" for ")
+      puts "#{$0}: error: expected #{expected} args but got #{received}"
+      exit!
     end
 
     private
