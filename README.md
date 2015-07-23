@@ -18,32 +18,43 @@ require 'bales'
 module SimpleApp
   class Application < Bales::Application
     version "0.0.1"
-  end
-
-  class Command < Bales::Command
+    description "Sample app"
+    
+    # Default action
+    option :recipient,
+           long_form: '--to',
+           short_form: '-2',
+           type: String
+           
     action do |args, opts|
-      Bales::Command::Help.run |args, opts|
+      opts[:recipient] ||= "world"
+      puts "Hello, #{opts[:recipient]}!"
     end
-
-    class Smack < Command
+    
+    # Subcommand
+    command "smack" do
       option :weapon,
              type: String,
              description: "Thing to smack with",
              short_form: '-w',
              long_form: '--with'
-
+             
       action do |victims, opts|
         suffix = opts[:weapon] ? " with a #{opts[:weapon]}" : ""
-
+        
         if victims.none?
           puts "You have been smacked#{suffix}."
         else
-          victims.each do |victim|
-            puts "#{victim} has been smacked#{suffix}."
-          end
+          puts "#{victim} has been smacked#{suffix}."
         end
       end
     end
+    
+    # Specify subcommand's parent class
+    command "help", parent: Bales::Command::Help
+    
+    # This is what makes the app actually run!
+    parse_and_run
   end
 end
 
