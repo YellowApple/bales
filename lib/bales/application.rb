@@ -162,6 +162,7 @@ module Bales
       puts "#{$0}: error: unknown option (#{flag})"
       exit!
     rescue ArgumentError
+      raise unless $!.message.match(/wrong number of arguments/)
       received, expected = $!
                              .message
                              .gsub("wrong number of arguments (", '')
