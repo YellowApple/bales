@@ -22,9 +22,9 @@ module Bales
     ##
     # Set or retrieve the application's version number.
     def self.version(v=nil)
-      @version = v unless v.nil?
-      @version = "0.0.0" if @version.nil?
-      @version
+      const_set("VERSION", v) unless v.nil?
+      const_set("VERSION", "0.0.0") if const_get("VERSION").nil?
+      const_get("VERSION")
     end
 
     ##
