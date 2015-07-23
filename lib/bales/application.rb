@@ -12,6 +12,13 @@ require 'bales/command'
 #   MyApp::Application.parse_and_run
 module Bales
   class Application
+    def self.inherited(child) # :nodoc:
+      child
+        .base_name
+        .const_set("Command", Class.new(Bales::Command))
+        .const_set("Help", Class.new(Bales::Command::Help))
+    end
+
     ##
     # Set or retrieve the application's version number.
     def self.version(v=nil)
