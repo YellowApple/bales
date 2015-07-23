@@ -85,15 +85,14 @@ Bruce has been smacked with a fish.
 
 * Come up with a name for your app, like `MyApp`
 * Create an `Application` class under that namespace which inherits from `Bales::Application`
-* Create a `Command` class under that namespace which inherits from `Bales::Command`
-* Give that `Command` an `action`, which will be what your application does by default if no valid subcommands are passed to it
-* (Optional) Create one or more classes under the `MyApp::Command` namespace, inheriting from some subclass of `Bales::Command` (including the base command you defined previously), if you want some git-style or rails-style subcommands.
+* Use the DSL (or define classes manually, if that's your thing)
 
 Basically, a Bales app is just a bunch of classes with some fairy dust that turns them into runnable commands.  Bales will check the namespace that your subclass of `Bales::Application` lives in for a `Command` namespace, then search there for available commands.
 
-The application has (or *will* have, more precisely; I don't have a whole lot for you on this front just yet) a few available DSL-ish functions for you to play with.
+The application has a few available DSL-ish functions for you to play with.
 
 * `version`: sets your app's version number.  If you use semantic versioning, you can query this with the `major_version`, `minor_version`, and `patch_level` class methods.
+* `command "foo" { ... }`: defines a subcommand called "foo", which turns into a class called `MyApp::Command::Foo` (if you picked the name `MyApp` above).  If you provide a block, said block will be evaluated in the class' context (see below for things you can do in said context).
 
 Meanwhile, commands *also* have some DSL-ish functions to play around with.
 
@@ -106,21 +105,24 @@ Meanwhile, commands *also* have some DSL-ish functions to play around with.
 * `description`: sets a long description of what your command does.  Should be a string.
 * `summary`: sets a short description of what your command does.  Should be a string.  Should also be shorter than `:description`, though this isn't strictly necessary.
 
+Some of the command functions (`option`, `action`, `description`, `summary`) can also be used from within the application class; doing so will define and configure a "root command", which is what is run if you run your app without any arguments.
+
 ## What can this thing already do?
 
 * Create a working command-line app
 * Automatically produce subcommands (recursively, in fact) based on the namespaces of the corresponding `Bales::Command` subclasses
-* Provide a DSL for defining command option flags (instead of the traditional answer of trying to figure out OptionParser)
+* Provide a DSL defining commands and options
 
 ## What might this thing someday do in the future?
 
-* Provide a DSL for creating the application and commands instead of defining classes directly
 * Provide some helpers to wrap things like HighLine, curses, etc.
 * Provide some additional flexibility in how options are specified without requiring users to completely reimplement a command's option parsing functions
 
-## What kind of a silly names is "Bales", anyway?
+## What kind of a silly name is "Bales", anyway?
 
 It's shamelessly stolen^H^H^H^H^H^Hborrowed from Jason R. Clark's "Testing the Multiverse" talk at Ruby on Ales 2015 (which, if you haven't watched, you [totally should](http://confreaks.tv/videos/roa2015-testing-the-multiverse)).  Sorry, Jason.  Hope you don't mind.
+
+Ironically enough, despite ripping off the name from a talk about Ruby testing, Bales currently lacks any formal test suite.  Hm...
 
 ## What's the license?
 
