@@ -1,7 +1,7 @@
 ##
 # Prints help text for a given namespace
 class Bales::Command::Help < Bales::Command
-  action do |args, opts|
+  action do |*args, **opts|
     target = ''
     if args.empty?
       target = basename

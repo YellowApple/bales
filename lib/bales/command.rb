@@ -104,15 +104,15 @@ module Bales
     # Primary entry point for a +Bales::Command+.  Generally a good
     # idea to set this with +.action+, but it's possible to override
     # this manually should you choose to do so.
-    def self.run(args, opts)
+    def self.run(*args, **opts)
       my_help_class_name = "#{self.name}::Help"
       root_help_class_name = "#{self.to_s.split('::').first}::Command::Help"
       if eval("defined? #{my_help_class_name}")
-        eval(my_help_class_name).run args, opts
+        eval(my_help_class_name).run *args, **opts
       elsif eval("defined? #{root_help_class_name}")
-        eval(root_help_class_name).run args, opts
+        eval(root_help_class_name).run *args, **opts
       else
-        Bales::Command::Help.run args, opts
+        Bales::Command::Help.run *args, **opts
       end
     end
 
