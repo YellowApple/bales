@@ -122,7 +122,11 @@ module Bales
     # hash of opts).  Takes a list of positional args followed by
     # named options.
     def self.run(command, *args, **opts)
-      command.run args, opts
+      if opts.none?
+        command.run *args
+      else
+        command.run *args, **opts
+      end
     end
 
     ##
