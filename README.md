@@ -53,19 +53,21 @@ SimpleApp::Application.parse_and_run
 And like this (assuming the above script lives in `/usr/local/bin/simple-app`)!
 
 ```
+$ simple-app
+Hello, world!
+$ simple-app -2 Bruce
+Hello, Bruce!
+$ simple-app --to Bruce
+Hello, Bruce!
 $ simple-app smack
 You have been smacked.
-$ simple-app smack foo
-foo has been smacked.
-$ simple-app smack Fred Wilma
-Fred has been smacked.
-Wilma has been smacked.
-$ simple-app smack John -w fish
-John has been smacked with a fish.
-$ simple-app smack John --with fish
-John has been smacked with a fish.
-$ simple-app smack John --with=fish
-John has been smacked with a fish.
+$ simple-app smack Bruce
+Bruce has been smacked.
+$ simple-app smack Bruce Bruce
+Bruce has been smacked.
+Bruce has been smacked.
+$ simple-app smack Bruce --with fish
+Bruce has been smacked with a fish.
 ```
 
 ## So how does it work?
