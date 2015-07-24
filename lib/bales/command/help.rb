@@ -13,7 +13,9 @@ class Bales::Command::Help < Bales::Command
       target = basename
     end
 
-    puts "(insert helptext for '#{target.command_name}' here)"
+    print_options(target)
+    print "\n"
+    print_commands(target)
   end
 
   private
@@ -38,6 +40,8 @@ class Bales::Command::Help < Bales::Command
     end
 
     ns.constants
+      .select { |c| ns.const_defined? "#{ns}::#{c}" }
+      .select { |c| eval("#{ns}::#{c}").class == Class }
       .select { |c| eval("#{ns}::#{c}") <= Bales::Command }
       .map { |c| eval "#{ns}::#{c}" }
   end
@@ -61,10 +65,30 @@ class Bales::Command::Help < Bales::Command
   end
 
   def self.print_options(command)
-    max_length = command.options.keys.max_by(&:length).length
+    optstrings = command.options.map do |opt|
+      opt = opt[1]
+      result = ""
+      result += "#{opt[:short_form]}, " unless opt[:short_form].nil?
+      result += "#{opt[:long_form]}"
+      result += "=[#{opt[:arg]}]" unless opt[:arg].nil?
+      result
+    end
 
-    command.options.each do |key, value|
+    max_length = optstrings.max_by(&:length).length
 
+    puts "Options:"
+
+    pairs = command.options.zip optstrings
+
+    pairs.each do |pair|
+      opt, string = *pair
+      opt = opt[1]
+      printf "%-#{max_length}s : %s\n", string, squeeze_text(
+               opt[:description],
+               width: ENV['COLUMNS'].to_i - max_length - 3,
+               offset: max_length,
+               indent_first_line: false
+             )
     end
   end
 
@@ -74,13 +98,16 @@ class Bales::Command::Help < Bales::Command
 
   def self.print_commands(namespace)
     cmds = commands(namespace)
+
     unless cmds.none?
       max_length = cmds.map { |c| c.command_name }.max_by(&:length).length
-      puts "Available commands:"
+
+      puts "Subcommands:"
+
       cmds.each do |command|
-        printf "%-#{max_length}s %s\n", command.command_name, squeeze_text(
+        printf "%-#{max_length}s : %s\n", command.command_name, squeeze_text(
                  command.summary,
-                 width: ENV['COLUMNS'] - max_length - 1,
+                 width: ENV['COLUMNS'].to_i - max_length - 3,
                  offset: max_length,
                  indent_first_line: false
                )
@@ -91,6 +118,7 @@ class Bales::Command::Help < Bales::Command
   def self.squeeze_text(*strings, **opts)
     text = strings.join('..')
     result = ""
+    opts[:indent_with] ||= ' '
 
     # wrap
     text.split("\n").map! do |line|
