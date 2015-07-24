@@ -1,6 +1,7 @@
 ##
 # Prints help text for a given namespace
 class Bales::Command::Help < Bales::Command
+  summary "Print this help text"
   action do |*args, **opts|
     target = ''
     if args.empty?
