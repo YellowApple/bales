@@ -16,6 +16,7 @@ module SimpleApp
     end
 
     command "smack" do
+      summary "Smack something"
       option :weapon,
              type: String,
              description: "Thing to smack with",
