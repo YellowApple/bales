@@ -175,28 +175,27 @@ module Bales
     private
 
     def self.parse_command_name(argv)
-      command_name_parts = [*constant_to_args(base_name), "command"]
+      const = base_name::Command
       depth = 0
-      catch(:end) do
-        argv.each_with_index do |arg, i|
-          throw(:end) if arg.match(/^-/)
-          begin
-            test = args_to_constant [*command_name_parts, arg]
-          rescue NameError
-            throw(:end)
-          end
 
-          if eval("defined? #{test}") == "constant"
-            command_name_parts.push arg
+      argv.each do |arg|
+          part = arg
+                 .downcase
+                 .gsub('_','-')
+                 .split('-')
+                 .map { |p| p.capitalize }
+                 .join
+          name = "#{const}::#{part}"
+          if const.const_defined? name
+            const = eval(name)
             depth += 1
           else
-            throw(:end)
+            break
           end
         end
-      end
-      command = args_to_constant [*command_name_parts]
+
       argv.shift depth
-      return command, argv
+      return const, argv
     end
 
     def self.base_name
