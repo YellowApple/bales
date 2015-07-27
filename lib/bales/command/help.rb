@@ -13,8 +13,8 @@ class Bales::Command::Help < Bales::Command
       target = basename
     end
 
+    print_summary(target)
     print_options(target)
-    print "\n"
     print_commands(target)
   end
 
@@ -74,26 +74,39 @@ class Bales::Command::Help < Bales::Command
       result
     end
 
-    max_length = optstrings.max_by(&:length).length
+    unless optstrings.none?
+      max_length = optstrings.max_by(&:length).length
 
-    puts "Options:"
+      puts "Options:"
 
-    pairs = command.options.zip optstrings
+      pairs = command.options.zip optstrings
 
-    pairs.each do |pair|
-      opt, string = *pair
-      opt = opt[1]
-      printf "%-#{max_length}s : %s\n", string, squeeze_text(
-               opt[:description],
-               width: ENV['COLUMNS'].to_i - max_length - 3,
-               offset: max_length,
-               indent_first_line: false
-             )
+      pairs.each do |pair|
+        opt, string = *pair
+        opt = opt[1]
+        printf "%-#{max_length}s : %s\n", string, squeeze_text(
+                 opt[:description],
+                 width: ENV['COLUMNS'].to_i - max_length - 3,
+                 offset: max_length,
+                 indent_first_line: false
+               )
+      end
+
+      print "\n"
     end
   end
 
-  def self.print_usage(command)
+  def self.print_summary(command)
+    if command.name == "#{rootname}::Command"
+      # TODO: allow this to be overridden somewhere (or otherwise make
+      # #command_name smarter)
+      name = rootname
+    else
+      name = command.command_name
+    end
 
+    print "#{name}: #{command.summary}\n\n"
+    print "Description:\n#{command.description}\n\n"
   end
 
   def self.print_commands(namespace)
@@ -112,6 +125,8 @@ class Bales::Command::Help < Bales::Command
                  indent_first_line: false
                )
       end
+
+      print "\n"
     end
   end
 
