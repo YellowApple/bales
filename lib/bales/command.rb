@@ -96,10 +96,7 @@ module Bales
     # subcommands' classes descendants of itself (unlike the
     # application-level equivalent, which defaults to +Bales::Command+
     # as the new subcommand's parent).
-    def self.command(name, **opts, &code)
-      const = self
-      opts[:parent] ||= self
-
+    def self.command(name, parent: self, base: self, &code)
       name
         .to_s
         .split(' ')
@@ -110,14 +107,14 @@ module Bales
                .map { |pp| pp.capitalize }
                .join }
         .each do |part|
-        if const.const_defined? "#{const.name}::#{part}"
-          const = eval("#{const.name}::#{part}")
+        if base.const_defined? "#{base.name}::#{part}"
+          base = eval("#{base.name}::#{part}")
         else
-          const = const.const_set(part, Class.new(opts[:parent]))
+          base = base.const_set(part, Class.new(parent))
         end
       end
 
-      const.instance_eval(&code) if block_given?
+      base.instance_eval(&code) if block_given?
     end
 
     ##
