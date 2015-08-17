@@ -26,9 +26,8 @@ module SimpleApp
            short_form: '-2',
            type: String
            
-    action do |args, opts|
-      opts[:recipient] ||= "world"
-      puts "Hello, #{opts[:recipient]}!"
+    action do |recipient: "world"|
+      puts "Hello, #{recipient}!"
     end
     
     # Subcommand
@@ -39,8 +38,8 @@ module SimpleApp
              short_form: '-w',
              long_form: '--with'
              
-      action do |victims, opts|
-        suffix = opts[:weapon] ? " with a #{opts[:weapon]}" : ""
+      action do |*victims, weapon: nil|
+        suffix = weapon ? " with a #{weapon}" : ""
         
         if victims.none?
           puts "You have been smacked#{suffix}."
@@ -52,6 +51,13 @@ module SimpleApp
     
     # Specify subcommand's parent class
     command "help", parent: Bales::Command::Help
+    
+    # Subsubcommands!
+    command "smack with" do
+      action do |weapon, *victims|
+        SimpleApp::Command::Smack.run(*victims, weapon: weapon)
+      end
+    end
     
     # This is what makes the app actually run!
     parse_and_run
@@ -78,6 +84,8 @@ $ simple-app smack Bruce Bruce
 Bruce has been smacked.
 Bruce has been smacked.
 $ simple-app smack Bruce --with fish
+Bruce has been smacked with a fish.
+$ simple-app smack with fish Bruce
 Bruce has been smacked with a fish.
 ```
 
