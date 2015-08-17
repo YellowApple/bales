@@ -61,6 +61,12 @@ module Bales
     end
 
     ##
+    # Alias for +description+
+    def self.desc(text=nil)
+      self.description(text)
+    end
+
+    ##
     # Get the command's summary, or set it if a string is passed to
     # it.
     def self.summary(text=nil)

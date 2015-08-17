@@ -45,7 +45,7 @@ module Bales
     end
 
     ##
-    # Set or retrieve the application's banner.
+    # Set or retrieve the application's banner
     def self.banner(text=nil)
       root_command.banner(text) unless text.nil?
       root_command.banner
@@ -56,6 +56,12 @@ module Bales
     def self.description(text=nil)
       root_command.description(text) unless text.nil?
       root_command.description
+    end
+
+    ##
+    # Alias for +description+
+    def self.desc(text=nil)
+      self.description(text)
     end
 
     ##
