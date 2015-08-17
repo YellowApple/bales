@@ -203,6 +203,8 @@ module Bales
       opts[:default] = false if opts[:type] <= TrueClass
       opts[:default] = true if opts[:type] <= FalseClass
 
+      opts[:description] = opts[:desc] if opts.key?(:desc)
+
       result = options
       result[name] = opts
       options = result
