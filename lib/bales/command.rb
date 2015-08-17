@@ -88,6 +88,39 @@ module Bales
     end
 
     ##
+    # Creates a new subcommand of the current command.  Identical in
+    # usage to +Bales::Application.command+, the only significant
+    # difference being that +Bales::Command.command+ defines a command
+    # on its own scope instead of that of the application's root
+    # command.  +Bales::Command.command+ also defaults to making
+    # subcommands' classes descendants of itself (unlike the
+    # application-level equivalent, which defaults to +Bales::Command+
+    # as the new subcommand's parent).
+    def self.command(name, **opts, &code)
+      const = self
+      opts[:parent] ||= self
+
+      name
+        .to_s
+        .split(' ')
+        .map { |p| p
+               .downcase
+               .gsub('_','-')
+               .split('-')
+               .map { |pp| pp.capitalize }
+               .join }
+        .each do |part|
+        if const.const_defined? "#{const.name}::#{part}"
+          const = eval("#{const.name}::#{part}")
+        else
+          const = const.const_set(part, Class.new(opts[:parent]))
+        end
+      end
+
+      const.instance_eval(&code) if block_given?
+    end
+
+    ##
     # Assigns an action to this command.  Said action is represented
     # as a block, which should accept an array of arguments and a hash
     # of options.  For example:
