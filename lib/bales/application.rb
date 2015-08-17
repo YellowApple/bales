@@ -32,37 +32,16 @@ module Bales
     # Command should be a string corresponding to how the command will
     # be invoked on the command-line; thus, a command with the class
     # name +FooBar::Baz+ should be passed as "foo-bar baz".
-    def self.command(name=nil, **opts, &code)
+    def self.command(name, parent: Bales::Command, &code)
       const_name = "#{base_name.name}::Command"
-      opts[:parent] ||= Bales::Command
 
       if eval("defined? #{const_name}") == "constant"
-        const = eval(const_name)
+        base = eval(const_name)
       else
-        const = base_name.const_set('Command', Class.new(opts[:parent]))
+        base = base_name.const_set('Command', Class.new(parent))
       end
 
-      unless name.nil?
-        name
-          .to_s
-          .split(' ')
-          .map { |p| p
-                 .downcase
-                 .gsub('_','-')
-                 .split('-')
-                 .map { |pp| pp.capitalize }
-                 .join }
-          .each do |part|
-          name = "#{const.name}::#{part}"
-          if const.const_defined? name
-            const = eval(name)
-          else
-            const = const.const_set(part, Class.new(opts[:parent]))
-          end
-        end
-      end
-
-      const.instance_eval(&code) if block_given?
+      base.command(name, parent: parent, base: base, &code)
     end
 
     ##
