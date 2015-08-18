@@ -13,6 +13,7 @@ class Bales::Command::Help < Bales::Command
       target = basename
     end
 
+    print_usage(target)
     print_summary(target)
     print_options(target)
     print_commands(target)
@@ -107,6 +108,10 @@ class Bales::Command::Help < Bales::Command
 
     print "#{name}: #{command.summary}\n\n"
     print "Description:\n#{command.description}\n\n"
+  end
+
+  def self.print_usage(command)
+    print "Usage: #{command.usage}\n\n"
   end
 
   def self.print_commands(namespace)
