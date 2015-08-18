@@ -13,8 +13,8 @@ class Bales::Command::Help < Bales::Command
       target = basename
     end
 
-    print_usage(target)
     print_summary(target)
+    print_usage(target)
     print_options(target)
     print_commands(target)
   end
