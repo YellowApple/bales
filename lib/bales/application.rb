@@ -130,21 +130,15 @@ module Bales
       command ||= default_command
       opts, args = command.parse_opts result
       return command, args, opts
-    end
-
-    ##
-    # Parses ARGV (or some other array if you specify one) for a
-    # command to run and its arguments/options, then runs the command.
-    def self.parse_and_run(argv=ARGV)
-      command, args, opts = parse argv
-      run command, *args, **opts
     rescue OptionParser::MissingArgument
       flag = $!.message.gsub("missing argument: ", '')
       puts "#{$0}: error: option needs an argument (#{flag})"
+      puts "Usage: #{command.usage}"
       exit!
     rescue OptionParser::InvalidOption
       flag = $!.message.gsub("invalid option: ", '')
       puts "#{$0}: error: unknown option (#{flag})"
+      puts "Usage: #{command.usage}"
       exit!
     rescue ArgumentError
       raise unless $!.message.match(/wrong number of arguments/)
@@ -154,7 +148,16 @@ module Bales
                              .gsub(")", '')
                              .split(" for ")
       puts "#{$0}: error: expected #{expected} args but got #{received}"
+      puts "Usage: #{command.usage}"
       exit!
+    end
+
+    ##
+    # Parses ARGV (or some other array if you specify one) for a
+    # command to run and its arguments/options, then runs the command.
+    def self.parse_and_run(argv=ARGV)
+      command, args, opts = parse argv
+      run command, *args, **opts
     end
 
     private
