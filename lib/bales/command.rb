@@ -94,6 +94,60 @@ module Bales
     end
 
     ##
+    # Translates the command's class name to a more complete name
+    # passed on the command line, including the subcommand, all
+    # commands leading to it, and the root command.
+    def self.full_name
+      parts = self
+             .name
+             .split('::')
+             .map { |p| p.gsub(/(.)([A-Z])/, '\1-\2').downcase }
+      parts = parts[2..-1].join(' ')
+      "#{$0} #{parts}"
+    end
+
+    ##
+    # Print the command's usage statement.
+    def self.usage
+      usage = []
+
+      # Name
+      usage << full_name
+
+      # Arguments
+      method(:run).parameters.each do |type, name|
+        # We don't handle keys and keyrests, since they're going to be
+        # taken care of once we start dealing with options.
+        case type
+        when :req then usage << "<#{name}>"
+        when :opt then usage << "[<#{name}>]"
+        when :rest then usage << "[<#{name}> ...]"
+        end
+      end
+
+      # Options
+      options.each_pair do |opt, args|
+        case
+        when (args[:type] <= TrueClass or args[:type] <= FalseClass)
+          if args.key?(:short_form)
+            usage << "[(#{args[:long_form]}|#{args[:short_form]})]"
+          else
+            usage << "[#{args[:long_form]}]"
+          end
+        else
+          if args.key?(:short_form)
+            usage << "[(#{args[:long_form]}|#{args[:short_form]}) " \
+                     "<#{args[:arg]}>]"
+          else
+            usage << "[#{args[:long_form]} <#{args[:arg]}>]"
+          end
+        end
+      end
+
+      usage.join(' ')
+    end
+
+    ##
     # Creates a new subcommand of the current command.  Identical in
     # usage to +Bales::Application.command+, the only significant
     # difference being that +Bales::Command.command+ defines a command
