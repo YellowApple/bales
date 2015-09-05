@@ -174,10 +174,14 @@ module Bales
                  .map { |p| p.capitalize }
                  .join
           name = "#{const}::#{part}"
-          if const.const_defined? name
-            const = eval(name)
-            depth += 1
-          else
+          begin
+            if const.const_defined? name
+              const = eval(name)
+              depth += 1
+            else
+              break
+            end
+          rescue NameError
             break
           end
         end

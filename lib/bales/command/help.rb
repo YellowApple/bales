@@ -41,8 +41,13 @@ class Bales::Command::Help < Bales::Command
     end
 
     ns.constants
-      .select { |c| ns.const_defined? "#{ns}::#{c}" }
-      .select { |c| eval("#{ns}::#{c}").class == Class }
+      .select { |c|
+      begin
+        ns.const_defined? "#{ns}::#{c}"
+      rescue NameError
+        false
+      end
+    }.select { |c| eval("#{ns}::#{c}").class == Class }
       .select { |c| eval("#{ns}::#{c}") <= Bales::Command }
       .map { |c| eval "#{ns}::#{c}" }
   end
