@@ -44,7 +44,7 @@ module SimpleApp
         if victims.none?
           puts "You have been smacked#{suffix}."
         else
-          puts "#{victim} has been smacked#{suffix}."
+          victims.each {|v| puts "#{v} has been smacked#{suffix}."}
         end
       end
     end
