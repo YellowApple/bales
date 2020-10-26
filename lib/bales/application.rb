@@ -157,6 +157,11 @@ module Bales
     # command to run and its arguments/options, then runs the command.
     def self.parse_and_run(argv=ARGV)
       command, args, opts = parse argv
+      # OptionParser includes nil values for missing options, so we
+      # need to make sure those don't clobber the command's defaults.
+      command.method(:run).parameters.select {|p| p[0] == :key}.map do |p|
+        opts.delete p[1] if opts[p[1]].nil?
+      end
       run command, *args, **opts
     end
 
