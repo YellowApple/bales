@@ -67,7 +67,8 @@ end
 SimpleApp::Application.parse_and_run
 ```
 
-And like this (assuming the above script lives in `/usr/local/bin/simple-app`)!
+And like this (assuming the above script lives in
+`/usr/local/bin/simple-app`)!
 
 ```
 $ simple-app
@@ -92,54 +93,95 @@ Bruce has been smacked with a fish.
 ## So how does it work?
 
 * Come up with a name for your app, like `MyApp`
-* Create an `Application` class under that namespace which inherits from `Bales::Application`
+
+* Create an `Application` class under that namespace which inherits
+  from `Bales::Application`
+
 * Use the DSL (or define classes manually, if that's your thing)
 
-Basically, a Bales app is just a bunch of classes with some fairy dust that turns them into runnable commands.  Bales will check the namespace that your subclass of `Bales::Application` lives in for a `Command` namespace, then search there for available commands.
+Basically, a Bales app is just a bunch of classes with some fairy dust
+that turns them into runnable commands.  Bales will check the
+namespace that your subclass of `Bales::Application` lives in for a
+`Command` namespace, then search there for available commands.
 
 The application has a few available DSL-ish functions for you to play with.
 
-* `version`: sets your app's version number.  If you use semantic versioning, you can query this with the `major_version`, `minor_version`, and `patch_level` class methods.
-* `command "foo" { ... }`: defines a subcommand called "foo", which turns into a class called `MyApp::Command::Foo` (if you picked the name `MyApp` above).  If you provide a block, said block will be evaluated in the class' context (see below for things you can do in said context).
+* `version`: sets your app's version number.  If you use semantic
+  versioning, you can query this with the `major_version`,
+  `minor_version`, and `patch_level` class methods.
+
+* `command "foo" { ... }`: defines a subcommand called "foo", which
+  turns into a class called `MyApp::Command::Foo` (if you picked the
+  name `MyApp` above).  If you provide a block, said block will be
+  evaluated in the class' context (see below for things you can do in
+  said context).
 
 Meanwhile, commands *also* have some DSL-ish functions to play around with.
 
-* `option`: defines a command-line option, like `--verbose` or `-f` or something.  It takes the name of the option (which becomes a key in your command's options hash) and some named parameters:
-  * `:type`: a valid Ruby class, like `String`.  For a boolean, you should provide either `TrueClass` or `FalseClass`, which - when set - will set the option in question to `true` or `false` (respectively).
-  * `:short_form`: a short flag, like `'-v'`.  You must specify this if you want a short flag.
-  * `:long_form`: a long flag, like `'--verbose'`.  This will be created from the option's name if you don't override it here.
-  * `:description`: a quick description of the option, like `"Whether or not to be verbose"`.
-* `action`: defines what the command should do when it's called.  This is provided in the form of a block.  Said block should accept two arguments (an array of arguments and a hash of options), though you don't *have* to name them with pipes and stuff if you know that your command won't take any arguments or options.
-* `description`: sets a long description of what your command does.  Should be a string.
-* `summary`: sets a short description of what your command does.  Should be a string.  Should also be shorter than `:description`, though this isn't strictly necessary.
+* `option`: defines a command-line option, like `--verbose` or `-f` or
+  something.  It takes the name of the option (which becomes a key in
+  your command's options hash) and some named parameters:
 
-Some of the command functions (`option`, `action`, `description`, `summary`) can also be used from within the application class; doing so will define and configure a "root command", which is what is run if you run your app without any arguments.
+  * `:type`: a valid Ruby class, like `String`.  For a boolean, you
+    should provide either `TrueClass` or `FalseClass`, which - when
+    set - will set the option in question to `true` or `false`
+    (respectively).
+  
+  * `:short_form`: a short flag, like `'-v'`.  You must specify this
+    if you want a short flag.
+  
+  * `:long_form`: a long flag, like `'--verbose'`.  This will be
+    created from the option's name if you don't override it here.
+  
+  * `:description`: a quick description of the option, like `"Whether
+    or not to be verbose"`.
+  
+* `action`: defines what the command should do when it's called.  This
+  is provided in the form of a block.  Said block should accept two
+  arguments (an array of arguments and a hash of options), though you
+  don't *have* to name them with pipes and stuff if you know that your
+  command won't take any arguments or options.
+
+* `description`: sets a long description of what your command does.
+  Should be a string.
+
+* `summary`: sets a short description of what your command does.
+  Should be a string.  Should also be shorter than `:description`,
+  though this isn't strictly necessary.
+
+Some of the command functions (`option`, `action`, `description`,
+`summary`) can also be used from within the application class; doing
+so will define and configure a "root command", which is what is run if
+you run your app without any arguments.
 
 ## What can this thing already do?
 
 * Create a working command-line app
-* Automatically produce subcommands (recursively, in fact) based on the namespaces of the corresponding `Bales::Command` subclasses
+
+* Automatically produce subcommands (recursively, in fact) based on
+  the namespaces of the corresponding `Bales::Command` subclasses
+
 * Provide a DSL defining commands and options
 
 ## What might this thing someday do in the future?
 
 * Provide some helpers to wrap things like HighLine, curses, etc.
-* Provide some additional flexibility in how options are specified without requiring users to completely reimplement a command's option parsing functions
+
+* Provide some additional flexibility in how options are specified
+  without requiring users to completely reimplement a command's option
+  parsing functions
 
 ## What kind of a silly name is "Bales", anyway?
 
-It's shamelessly stolen^H^H^H^H^H^Hborrowed from Jason R. Clark's "Testing the Multiverse" talk at Ruby on Ales 2015 (which, if you haven't watched, you [totally should](http://confreaks.tv/videos/roa2015-testing-the-multiverse)).  Sorry, Jason.  Hope you don't mind.
+It's shamelessly stolen^H^H^H^H^H^Hborrowed from Jason R. Clark's
+"Testing the Multiverse" talk at Ruby on Ales 2015 (which, if you
+haven't watched, you [totally
+should](http://confreaks.tv/videos/roa2015-testing-the-multiverse)).
+Sorry, Jason.  Hope you don't mind.
 
-Ironically enough, despite ripping off the name from a talk about Ruby testing, Bales currently lacks any formal test suite.  Hm...
+Ironically enough, despite ripping off the name from a talk about Ruby
+testing, Bales currently lacks any formal test suite.  Hm...
 
 ## What's the license?
 
-MIT License
-
-Copyright (c) 2015 Ryan S. Northrup
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+MIT License; see COPYING for details.
